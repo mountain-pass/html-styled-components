@@ -306,4 +306,21 @@ describe('usage - two parameters, first is attributes object', () => {
       '<div class="c100 m-0 text-left" title="header"><h1 class="c101" >hello</h1><h1 class="c101" >world</h1></div>'
     )
   })
+
+  it('simplest example usage', () => {
+    const { styled, generateCssClasses } = styledComponents.newInstance()
+    const CustomH1 = styled.h1`
+      border: 1px solid blue;
+    `
+    const html = `<html><head><style>${generateCssClasses()}</style></head><body>${CustomH1(
+      'Hello world!'
+    )}</body></html>`
+    // output html
+    compare(
+      html,
+      `<html><head><style>.c100 {
+      border: 1px solid blue;
+      }</style></head><body><h1 class="c100" >Hello world!</h1></body></html>`
+    )
+  })
 })

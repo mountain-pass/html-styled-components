@@ -16,31 +16,50 @@ Please see the [Homepage](https://mountain-pass.github.io/html-styled-components
 
 ## Install
 
+Install from NPM
+
 ```bash
-npm install --save html-styled-components
+npm i @mountainpass/html-styled-components
 ```
 
 ## Usage
 
 ### The bare minimum
 
-todo
+```js
+const { styled, generateCssClasses } = require('@mountainpass/html-styled-compoennts').newInstance()
 
-### With some pseudo code
+const CustomH1 = styled.h1`
+  border: 1px solid blue;
+`
+const html = `<html><head><style>${generateCssClasses()}</style></head><body>${CustomH1('Hello world!')}</body></html>`
+```
 
-todo
+**Output**
+
+```html
+<html>
+  <head>
+    <style>
+      .c100 {
+        border: 1px solid blue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="c100">Hello world!</h1>
+  </body>
+</html>
+`
+```
 
 ### Full example
 
-todo
+Please see the unit tests for [all usage examples](src/index.test.ts).
 
 ## Configuration
 
-todo
-
-## Tips
-
-todo
+Please see the unit tests for [all configuration examples](src/index.test.ts).
 
 ## License
 
