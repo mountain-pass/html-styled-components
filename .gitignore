@@ -22,7 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-react-infinite-scroll-trigger/
-.npmrc
-
-
+coverage/
+.nyc_output/
