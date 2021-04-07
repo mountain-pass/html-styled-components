@@ -2,6 +2,17 @@
 const styledComponents = require('./index')
 const { expect } = require('chai')
 
+const normalise = (str: string) =>
+  str
+    .split('\n')
+    .map((s) => s.trim())
+    .join('\n')
+    .trim()
+
+const compare = (actual: string, expected: string) => {
+  expect(normalise(actual)).to.eql(normalise(expected))
+}
+
 describe('configuration', () => {
   it('should support using any html element', () => {
     const { styled } = styledComponents.newInstance()
@@ -17,10 +28,10 @@ describe('configuration', () => {
     const b = styled.b`
       border: 1px solid blue;
     `
-    expect(div('hello world')).to.eql('<div class="c100" >hello world</div>')
-    expect(h1('hello world')).to.eql('<h1 class="c101" >hello world</h1>')
-    expect(p('hello world')).to.eql('<p class="c102" >hello world</p>')
-    expect(b('hello world')).to.eql('<b class="c103" >hello world</b>')
+    compare(div('hello world'), '<div class="c100" >hello world</div>')
+    compare(h1('hello world'), '<h1 class="c101" >hello world</h1>')
+    compare(p('hello world'), '<p class="c102" >hello world</p>')
+    compare(b('hello world'), '<b class="c103" >hello world</b>')
   })
 
   it('should have unique css class names', () => {
@@ -38,19 +49,20 @@ describe('configuration', () => {
       border: 1px solid yellow;
     `
     // classes should line up...
-    expect(generateCssClasses()).to.eql(
+    compare(
+      generateCssClasses(),
       `
 .c100 {
-border:1px solid blue;
+border: 1px solid blue;
 }
 .c101 {
-border:1px solid red;
+border: 1px solid red;
 }
 .c102 {
-border:1px solid green;
+border: 1px solid green;
 }
 .c103 {
-border:1px solid yellow;
+border: 1px solid yellow;
 }
         `.trim()
     )
@@ -61,12 +73,13 @@ border:1px solid yellow;
     const div = styled.div`
       border: 1px solid blue;
     `
-    expect(div('hello')).to.eql('<div class="c100" >hello</div>')
-    expect(div('world')).to.eql('<div class="c100" >world</div>')
-    expect(generateCssClasses()).to.eql(
+    compare(div('hello'), '<div class="c100" >hello</div>')
+    compare(div('world'), '<div class="c100" >world</div>')
+    compare(
+      generateCssClasses(),
       `
 .c100 {
-border:1px solid blue;
+border: 1px solid blue;
 }
         `.trim()
     )
@@ -84,18 +97,19 @@ border:1px solid blue;
       background: green;
     `
     // element inherit css...
-    expect(redtext('hello world')).to.eql('<div class="c101 c100" >hello world</div>')
-    expect(greenbkgd('hello world')).to.eql('<div class="c102 c101 c100" >hello world</div>')
-    expect(generateCssClasses()).to.eql(
+    compare(redtext('hello world'), '<div class="c101 c100" >hello world</div>')
+    compare(greenbkgd('hello world'), '<div class="c102 c101 c100" >hello world</div>')
+    compare(
+      generateCssClasses(),
       `
 .c100 {
-border:1px solid blue;
+border: 1px solid blue;
 }
 .c101 {
-color:red;
+color: red;
 }
 .c102 {
-background:green;
+background: green;
 }
         `.trim()
     )
@@ -115,17 +129,18 @@ background:green;
       }
     `
     // element inherit css...
-    expect(blueborder('hello world')).to.eql('<div class="c100" >hello world</div>')
-    expect(generateCssClasses()).to.eql(
+    compare(blueborder('hello world'), '<div class="c100" >hello world</div>')
+    compare(
+      generateCssClasses(),
       `
 .c100 {
-border:1px solid blue;
+border: 1px solid blue;
 }
 .c100.red-text {
-color:red;
+color: red;
 }
 .c100 > p {
-background:green;
+background: green;
 }
         `.trim()
     )
@@ -140,7 +155,7 @@ describe('usage - no parameters', () => {
     const blueborder = styled.div`
       border: 1px solid blue;
     `
-    expect(blueborder()).to.eql('<div class="c100" ></div>')
+    compare(blueborder(), '<div class="c100" ></div>')
   })
 })
 
@@ -152,7 +167,7 @@ describe('usage - one parameter', () => {
     const blueborder = styled.div`
       border: 1px solid blue;
     `
-    expect(blueborder('hello <b>world</b>')).to.eql('<div class="c100" >hello <b>world</b></div>')
+    compare(blueborder('hello <b>world</b>'), '<div class="c100" >hello <b>world</b></div>')
   })
 
   it('should support accepting another styled component', () => {
@@ -163,7 +178,7 @@ describe('usage - one parameter', () => {
     const redheader = styled.h1`
       border: 1px solid red;
     `
-    expect(blueborder(redheader('hello'))).to.eql('<div class="c100" ><h1 class="c101" >hello</h1></div>')
+    compare(blueborder(redheader('hello')), '<div class="c100" ><h1 class="c101" >hello</h1></div>')
   })
 
   it('should support accepting array of html strings', () => {
@@ -171,7 +186,7 @@ describe('usage - one parameter', () => {
     const blueborder = styled.div`
       border: 1px solid blue;
     `
-    expect(blueborder(['<i>hello</i>', '<b>world</b>'])).to.eql('<div class="c100" ><i>hello</i><b>world</b></div>')
+    compare(blueborder(['<i>hello</i>', '<b>world</b>']), '<div class="c100" ><i>hello</i><b>world</b></div>')
   })
 
   it('should support accepting array of styled components', () => {
@@ -182,7 +197,8 @@ describe('usage - one parameter', () => {
     const redheader = styled.h1`
       border: 1px solid red;
     `
-    expect(blueborder([redheader('hello'), redheader('world')])).to.eql(
+    compare(
+      blueborder([redheader('hello'), redheader('world')]),
       '<div class="c100" ><h1 class="c101" >hello</h1><h1 class="c101" >world</h1></div>'
     )
   })
@@ -194,7 +210,8 @@ describe('usage - two parameters, first is css class (string)', () => {
     const blueborder = styled.div`
       border: 1px solid blue;
     `
-    expect(blueborder('m-0 text-left', 'hello <b>world</b>')).to.eql(
+    compare(
+      blueborder('m-0 text-left', 'hello <b>world</b>'),
       '<div class="c100 m-0 text-left" >hello <b>world</b></div>'
     )
   })
@@ -207,7 +224,8 @@ describe('usage - two parameters, first is css class (string)', () => {
     const redheader = styled.h1`
       border: 1px solid red;
     `
-    expect(blueborder('m-0 text-left', redheader('hello'))).to.eql(
+    compare(
+      blueborder('m-0 text-left', redheader('hello')),
       '<div class="c100 m-0 text-left" ><h1 class="c101" >hello</h1></div>'
     )
   })
@@ -217,7 +235,8 @@ describe('usage - two parameters, first is css class (string)', () => {
     const blueborder = styled.div`
       border: 1px solid blue;
     `
-    expect(blueborder('m-0 text-left', ['<i>hello</i>', '<b>world</b>'])).to.eql(
+    compare(
+      blueborder('m-0 text-left', ['<i>hello</i>', '<b>world</b>']),
       '<div class="c100 m-0 text-left" ><i>hello</i><b>world</b></div>'
     )
   })
@@ -230,7 +249,8 @@ describe('usage - two parameters, first is css class (string)', () => {
     const redheader = styled.h1`
       border: 1px solid red;
     `
-    expect(blueborder('m-0 text-left', [redheader('hello'), redheader('world')])).to.eql(
+    compare(
+      blueborder('m-0 text-left', [redheader('hello'), redheader('world')]),
       '<div class="c100 m-0 text-left" ><h1 class="c101" >hello</h1><h1 class="c101" >world</h1></div>'
     )
   })
@@ -242,7 +262,8 @@ describe('usage - two parameters, first is attributes object', () => {
     const blueborder = styled.div`
       border: 1px solid blue;
     `
-    expect(blueborder({ className: 'm-0 text-left', title: 'header' }, 'hello <b>world</b>')).to.eql(
+    compare(
+      blueborder({ className: 'm-0 text-left', title: 'header' }, 'hello <b>world</b>'),
       '<div class="c100 m-0 text-left" title="header">hello <b>world</b></div>'
     )
   })
@@ -255,7 +276,8 @@ describe('usage - two parameters, first is attributes object', () => {
     const redheader = styled.h1`
       border: 1px solid red;
     `
-    expect(blueborder({ className: 'm-0 text-left', title: 'header' }, redheader('hello'))).to.eql(
+    compare(
+      blueborder({ className: 'm-0 text-left', title: 'header' }, redheader('hello')),
       '<div class="c100 m-0 text-left" title="header"><h1 class="c101" >hello</h1></div>'
     )
   })
@@ -265,7 +287,8 @@ describe('usage - two parameters, first is attributes object', () => {
     const blueborder = styled.div`
       border: 1px solid blue;
     `
-    expect(blueborder({ className: 'm-0 text-left', title: 'header' }, ['<i>hello</i>', '<b>world</b>'])).to.eql(
+    compare(
+      blueborder({ className: 'm-0 text-left', title: 'header' }, ['<i>hello</i>', '<b>world</b>']),
       '<div class="c100 m-0 text-left" title="header"><i>hello</i><b>world</b></div>'
     )
   })
@@ -278,9 +301,8 @@ describe('usage - two parameters, first is attributes object', () => {
     const redheader = styled.h1`
       border: 1px solid red;
     `
-    expect(
-      blueborder({ className: 'm-0 text-left', title: 'header' }, [redheader('hello'), redheader('world')])
-    ).to.eql(
+    compare(
+      blueborder({ className: 'm-0 text-left', title: 'header' }, [redheader('hello'), redheader('world')]),
       '<div class="c100 m-0 text-left" title="header"><h1 class="c101" >hello</h1><h1 class="c101" >world</h1></div>'
     )
   })
