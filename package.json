@@ -1,6 +1,6 @@
 {
   "name": "@mountainpass/html-styled-components",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Styled components syntax for creating raw html in javascript.",
   "author": "Mountain Pass <info@mountain-pass.com.au>",
   "contributors": [
