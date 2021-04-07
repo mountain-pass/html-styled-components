@@ -50,7 +50,6 @@ const html = `<html><head><style>${generateCssClasses()}</style></head><body>${C
     <h1 class="c100">Hello world!</h1>
   </body>
 </html>
-`
 ```
 
 ### Full example
