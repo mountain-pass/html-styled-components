@@ -21,7 +21,7 @@ npm i @mountainpass/html-styled-components
 ### The bare minimum
 
 ```js
-const { styled, generateCssClasses } = require('@mountainpass/html-styled-compoennts').newInstance()
+const { styled, generateCssClasses } = require('@mountainpass/html-styled-components').newInstance()
 
 const CustomH1 = styled.h1`
   border: 1px solid blue;
